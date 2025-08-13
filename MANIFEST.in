@@ -1,0 +1,30 @@
+# Include important files in the package
+include README.md
+include LICENSE
+include QUICK_START.md
+include requirements.txt
+include requirements_web.txt
+include install.sh
+include Dockerfile
+include docker-compose.yml
+
+# Include all templates and static files
+recursive-include templates *.html
+recursive-include static *
+
+# Include benchmark and service modules
+recursive-include benchmarking *.py
+recursive-include services *.py
+recursive-include property_tests *.py
+recursive-include chaos_tests *.py
+
+# Exclude test files and cache
+recursive-exclude tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * .git*
+
+# Exclude databases
+exclude *.db
+exclude *.sqlite
+exclude *.sqlite3
