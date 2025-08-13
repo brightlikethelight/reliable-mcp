@@ -1,0 +1,37 @@
+{
+  "mcp_testing": {
+    "operations": 200,
+    "throughput": 1529.6876111213433,
+    "errors": 0
+  },
+  "security": {
+    "vulnerabilities_found": 3,
+    "risk_score": 45,
+    "findings": [
+      {
+        "type": "path_traversal",
+        "severity": "HIGH",
+        "description": "Potential path traversal in file operations"
+      },
+      {
+        "type": "input_validation",
+        "severity": "MEDIUM",
+        "description": "Missing input validation on file paths"
+      },
+      {
+        "type": "info_disclosure",
+        "severity": "LOW",
+        "description": "Stack traces exposed in error messages"
+      }
+    ]
+  },
+  "modal": {
+    "speedup": 28800.0,
+    "gpu_enabled": true,
+    "max_concurrency": 10000
+  },
+  "business": {
+    "total_savings": 565000.0,
+    "roi_percentage": 5650.0
+  }
+}

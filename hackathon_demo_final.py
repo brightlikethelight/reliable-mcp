@@ -231,19 +231,19 @@ async def main():
     
     # Demo 1: Basic MCP Testing (WORKS)
     print("\n🚀 Starting demonstrations...")
-    input("\nPress Enter to start Demo 1: Real MCP Testing...")
+    print("\n[Demo 1: Real MCP Testing]")
     results["mcp_testing"] = await demo_basic_mcp_testing()
     
     # Demo 2: Security Scanning (WORKS)
-    input("\nPress Enter to start Demo 2: Security Scanning...")
+    print("\n[Demo 2: Security Scanning]")
     results["security"] = await demo_security_scanning()
     
     # Demo 3: Modal Capabilities (CONCEPT)
-    input("\nPress Enter to start Demo 3: Modal Platform...")
+    print("\n[Demo 3: Modal Platform]")
     results["modal"] = await demo_modal_capabilities()
     
     # Demo 4: Business Value
-    input("\nPress Enter to see Business Value...")
+    print("\n[Demo 4: Business Value]")
     results["business"] = await demo_business_value()
     
     # Summary
