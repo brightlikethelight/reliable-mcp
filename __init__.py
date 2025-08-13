@@ -11,7 +11,7 @@ from .mcp_client import MCPClient
 from .config import SERVERS, TEST_DIR
 
 # Testing modules  
-from .security_scanner import SecurityScanner
+from .security_scanner import MCPSecurityScanner
 from .performance_tester import PerformanceTester
 from .chaos_tester import ChaosTester
 
@@ -19,7 +19,7 @@ __all__ = [
     "MCPClient",
     "SERVERS",
     "TEST_DIR", 
-    "SecurityScanner",
+    "MCPSecurityScanner",
     "PerformanceTester",
     "ChaosTester",
 ]

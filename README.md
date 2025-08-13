@@ -50,21 +50,34 @@ MCP Reliability Lab is a Modal-powered platform that:
 3. **Automates security testing** - Including prompt injection (15 attack vectors)
 4. **Self-tests continuously** - Agents that ensure their own reliability
 
-## 🚀 Quick Start with Modal
+## 🚀 Quick Start
 
+### Option 1: Local Demo (No Modal Required)
 ```bash
 # Clone the repository
 git clone https://github.com/brightlikethelight/reliable-mcp
 cd mcp_reliability_lab
 
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the local demo
+python demo_local.py
+```
+
+### Option 2: Full Modal Deployment
+```bash
 # Install Modal
 pip install modal
 
-# Deploy to Modal (one command!)
+# Authenticate with Modal
+modal token new
+
+# Deploy to Modal
 ./deploy_to_modal.sh
 
-# Run the hackathon demo
-python demo_hackathon.py
+# Test deployment
+modal run modal_app.py::test_server --server-url "https://httpbin.org"
 ```
 
 ## 📊 Live Dashboard

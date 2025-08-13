@@ -1,13 +1,7 @@
 [
-  "https://mcp-server-1.example.com",
-  "https://mcp-server-2.example.com",
-  "https://mcp-server-3.example.com",
-  "https://api.openai.com/mcp",
-  "https://api.anthropic.com/mcp",
-  "https://mcp.google.com",
-  "https://mcp.microsoft.com",
-  "https://mcp.meta.com",
-  "https://mcp.amazon.com",
-  "https://mcp.github.com",
-  "https://httpbin.org"
+  "https://httpbin.org",
+  "https://jsonplaceholder.typicode.com",
+  "https://api.github.com",
+  "https://dummyjson.com",
+  "https://reqres.in/api"
 ]

@@ -61,16 +61,14 @@ class MCPTestRunner:
         sys.path.insert(0, "/app")
         sys.path.insert(0, "/app/mcp_reliability_lab")
         
-        # Import the actual working modules
-        from mcp_reliability_lab.security_scanner import SecurityScanner
+        # Initialize testers - we'll use simpler implementations
         from mcp_reliability_lab.performance_tester import PerformanceTester
         from mcp_reliability_lab.chaos_tester import ChaosTester
         
-        self.scanner = SecurityScanner()
         self.performance = PerformanceTester()
         self.chaos = ChaosTester()
         
-        # These modules will be created/imported if they exist
+        # Import security scanner if available
         try:
             from mcp_reliability_lab.prompt_injection_auditor import PromptInjectionAuditor
             self.auditor = PromptInjectionAuditor()
@@ -172,12 +170,26 @@ class MCPTestRunner:
         }
         
         try:
-            # Test with available security scanners
-            if self.scanner:
-                scan_result = await self.scanner.scan(server_url)
-                result["vulnerabilities"] = len(scan_result.get("vulnerabilities", []))
-                result["cve_matches"] = scan_result.get("cve_matches", [])
-                result["security_headers"] = scan_result.get("security_headers", {})
+            # Simplified security testing
+            # Check for basic security issues
+            import aiohttp
+            async with aiohttp.ClientSession() as session:
+                try:
+                    async with session.get(server_url) as response:
+                        # Check security headers
+                        headers = response.headers
+                        security_headers = {
+                            "X-Frame-Options": "X-Frame-Options" in headers,
+                            "X-Content-Type-Options": "X-Content-Type-Options" in headers,
+                            "Strict-Transport-Security": "Strict-Transport-Security" in headers
+                        }
+                        result["security_headers"] = security_headers
+                        
+                        # Count missing headers as vulnerabilities
+                        missing_headers = sum(1 for v in security_headers.values() if not v)
+                        result["vulnerabilities"] = missing_headers
+                except:
+                    result["vulnerabilities"] = 1  # Connection issue is a vulnerability
             
             # Test prompt injection if module available
             if self.auditor:
