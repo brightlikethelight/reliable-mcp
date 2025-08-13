@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Reliability Lab</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .nav {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin-right: 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: #f0f4ff;
+        }
+        
+        .nav a.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background: #f7fafc;
+        }
+        
+        .status-success {
+            color: #48bb78;
+            font-weight: 600;
+        }
+        
+        .status-partial {
+            color: #ed8936;
+            font-weight: 600;
+        }
+        
+        .status-failed {
+            color: #f56565;
+            font-weight: 600;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .quick-test {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .quick-test h2 {
+            margin-bottom: 1.5rem;
+            color: #2d3748;
+        }
+        
+        .form-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        select {
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+            min-width: 150px;
+        }
+        
+        .medal {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        
+        .top-servers {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .top-servers li {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f7fafc;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .server-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .server-score {
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            select, .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 MCP Reliability Lab</h1>
+            <p>Scientific testing for Model Context Protocol servers</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/" class="active">Dashboard</a>
+            <a href="/test">Test Center</a>
+            <a href="/metrics">Metrics</a>
+            <a href="/leaderboard">Leaderboard</a>
+        </nav>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="stat">
+                    <div class="stat-value">{{ stats.total_tests or 0 }}</div>
+                    <div class="stat-label">Total Tests Run</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="stat">
+                    <div class="stat-value">{{ "%.1f"|format(stats.avg_reliability or 0) }}%</div>
+                    <div class="stat-label">Average Reliability</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="stat">
+                    <div class="stat-value">{{ stats.servers_tested or 0 }}</div>
+                    <div class="stat-label">Servers Tested</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="stat">
+                    <div class="stat-value">{{ "%.1f"|format(stats.success_rate or 0) }}%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-test">
+            <h2>🚀 Quick Test</h2>
+            <form hx-post="/run-test" 
+                  hx-target="#results" 
+                  hx-indicator="#spinner"
+                  class="form-group">
+                <select name="server_type" required>
+                    <option value="filesystem">Filesystem</option>
+                </select>
+                <select name="test_type" required>
+                    <option value="basic">Basic Test</option>
+                    <option value="benchmark">Quick Benchmark</option>
+                </select>
+                <button type="submit" class="btn">
+                    Run Test
+                    <span id="spinner" class="htmx-indicator loading" style="margin-left: 10px;"></span>
+                </button>
+            </form>
+            <div id="results"></div>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>🏆 Top Servers</h3>
+                <ul class="top-servers">
+                    {% for i, (server, score, tests) in enumerate(top_servers[:3]) %}
+                    <li>
+                        <span>
+                            <span class="medal">
+                                {% if i == 0 %}🥇{% elif i == 1 %}🥈{% else %}🥉{% endif %}
+                            </span>
+                            <span class="server-name">{{ server }}</span>
+                        </span>
+                        <span class="server-score">{{ "%.1f"|format(score) }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="card" style="grid-column: span 2;">
+                <h3>📊 Recent Tests</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Server</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for test in recent_tests[:5] %}
+                        <tr>
+                            <td>{{ test.timestamp|default("N/A") }}</td>
+                            <td>{{ test.server|default("Unknown") }}</td>
+                            <td>{{ test.test_type|default("Basic") }}</td>
+                            <td class="status-{{ test.status|default('unknown') }}">
+                                {{ test.status|default("Unknown") }}
+                            </td>
+                            <td>{{ "%.1f"|format(test.score|default(0)) }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3rem; color: #718096;">
+            <p>MCP Reliability Lab v1.0.0 | Last updated: <span hx-get="/api/stats" hx-trigger="every 30s" hx-swap="none">{{ "now"|date }}</span></p>
+        </div>
+    </div>
+</body>
+</html>

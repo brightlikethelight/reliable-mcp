@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Reliability Lab - Scientific Testing for Model Context Protocol</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #667eea;
+        }
+        
+        .hero {
+            margin-top: 80px;
+            padding: 4rem 0;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s 0.2s both;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            animation: fadeInUp 0.8s 0.4s both;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .features {
+            background: white;
+            padding: 4rem 0;
+            margin-top: 2rem;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            padding: 2rem;
+            border-radius: 10px;
+            background: #f8f9fa;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+        
+        .metrics {
+            background: #f8f9fa;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .metric {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .metric-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .installation {
+            padding: 4rem 0;
+            background: white;
+        }
+        
+        .installation h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+        
+        .install-steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 0.5rem;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .workloads {
+            background: #f8f9fa;
+            padding: 4rem 0;
+        }
+        
+        .workloads h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+        
+        .workload-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .workload-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .workload-item h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #667eea;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">🔬 MCP Reliability Lab</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#workloads">Workloads</a></li>
+                <li><a href="https://github.com/yourusername/mcp-reliability-lab">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Scientific Testing for MCP Servers</h1>
+            <p>Measure reliability, performance, and consistency of Model Context Protocol implementations</p>
+            <div class="cta-buttons">
+                <a href="#installation" class="btn btn-primary">Get Started</a>
+                <a href="https://github.com/yourusername/mcp-reliability-lab" class="btn btn-secondary">View on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Comprehensive Testing Suite</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧪</div>
+                    <h3>Property-Based Testing</h3>
+                    <p>Automatically generate thousands of test cases to find edge cases and ensure robustness across all input ranges.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💥</div>
+                    <h3>Chaos Engineering</h3>
+                    <p>Inject faults, latency, and errors to test how servers handle real-world conditions and failure scenarios.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Performance Benchmarks</h3>
+                    <p>Measure throughput, latency percentiles (P50/P95/P99), and consistency across standard workloads.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>State Machine Testing</h3>
+                    <p>Verify correct behavior through complex sequences of stateful operations and transitions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Server Comparison</h3>
+                    <p>Compare multiple MCP servers side-by-side with automatic leaderboard generation and scoring.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Web Dashboard</h3>
+                    <p>Real-time monitoring, test execution, and results visualization through an intuitive web interface.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="metrics">
+        <div class="container">
+            <h2>Key Metrics We Measure</h2>
+            <div class="metric-row">
+                <div class="metric">
+                    <div class="metric-value">0-100</div>
+                    <div class="metric-label">Reliability Score</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">ops/sec</div>
+                    <div class="metric-label">Throughput</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">P95 ms</div>
+                    <div class="metric-label">Latency</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">CV %</div>
+                    <div class="metric-label">Consistency</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="installation" id="installation">
+        <div class="container">
+            <h2>Quick Installation</h2>
+            <div class="install-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h3>One-Command Install</h3>
+                        <div class="code-block">
+                            curl -sSL https://raw.githubusercontent.com/yourusername/mcp-reliability-lab/main/install.sh | bash
+                        </div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h3>Start the Lab</h3>
+                        <div class="code-block">
+                            cd ~/mcp-reliability-lab<br>
+                            ./start.sh
+                        </div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h3>Run Your First Test</h3>
+                        <div class="code-block">
+                            ./mcp-lab test filesystem --scientific
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="workloads" id="workloads">
+        <div class="container">
+            <h2>Standard Workloads</h2>
+            <div class="workload-list">
+                <div class="workload-item">
+                    <h4>Real World Mix</h4>
+                    <p>Balanced operations mimicking typical usage patterns</p>
+                </div>
+                <div class="workload-item">
+                    <h4>CRUD Heavy</h4>
+                    <p>Focus on Create, Read, Update, Delete operations</p>
+                </div>
+                <div class="workload-item">
+                    <h4>Read Intensive</h4>
+                    <p>80% read operations for cache-friendly workloads</p>
+                </div>
+                <div class="workload-item">
+                    <h4>Write Intensive</h4>
+                    <p>70% write operations for persistence testing</p>
+                </div>
+                <div class="workload-item">
+                    <h4>Search Heavy</h4>
+                    <p>Complex queries and search operations</p>
+                </div>
+                <div class="workload-item">
+                    <h4>Concurrent Stress</h4>
+                    <p>High concurrency with parallel operations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/yourusername/mcp-reliability-lab">GitHub</a>
+                <a href="https://docs.mcp-lab.com">Documentation</a>
+                <a href="https://github.com/yourusername/mcp-reliability-lab/issues">Report Issues</a>
+                <a href="mailto:team@mcp-lab.com">Contact</a>
+            </div>
+            <p>&copy; 2024 MCP Reliability Lab. Built with science and precision.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s both';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.feature-card, .step, .workload-item').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

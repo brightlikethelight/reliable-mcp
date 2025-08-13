@@ -1,0 +1,89 @@
+{
+  "timestamp": 1754950709.322291,
+  "pattern_analysis": {
+    "tests": [
+      {
+        "operation": "write_file",
+        "iterations": 30,
+        "mean": 0.5115588506062826,
+        "stdev": 0.21079769146815142,
+        "min": 0.33402442932128906,
+        "max": 1.0259151458740234,
+        "cv": 41.206928825162734,
+        "consistency_score": 58.793071174837266,
+        "categories": {
+          "fast": 28,
+          "normal": 2,
+          "slow": 0,
+          "very_slow": 0
+        },
+        "outliers": 4,
+        "outlier_percentage": 13.333333333333334,
+        "test_name": "Small Write"
+      },
+      {
+        "operation": "write_file",
+        "iterations": 30,
+        "mean": 1.1611382166544597,
+        "stdev": 0.5302857293050333,
+        "min": 0.5171298980712891,
+        "max": 2.401113510131836,
+        "cv": 45.66947514938609,
+        "consistency_score": 54.33052485061391,
+        "categories": {
+          "fast": 17,
+          "normal": 13,
+          "slow": 0,
+          "very_slow": 0
+        },
+        "outliers": 0,
+        "outlier_percentage": 0.0,
+        "test_name": "Large Write"
+      },
+      {
+        "operation": "read_text_file",
+        "iterations": 30,
+        "mean": 0.26822884877522785,
+        "stdev": 0.10217952872461732,
+        "min": 0.1888275146484375,
+        "max": 0.5850791931152344,
+        "cv": 38.09416071059619,
+        "consistency_score": 61.90583928940381,
+        "categories": {
+          "fast": 30,
+          "normal": 0,
+          "slow": 0,
+          "very_slow": 0
+        },
+        "outliers": 3,
+        "outlier_percentage": 10.0,
+        "test_name": "Read"
+      },
+      {
+        "operation": "list_directory",
+        "iterations": 30,
+        "mean": 0.3112316131591797,
+        "stdev": 0.1352006473345871,
+        "min": 0.22912025451660156,
+        "max": 0.9360313415527344,
+        "cv": 43.440525196724984,
+        "consistency_score": 56.559474803275016,
+        "categories": {
+          "fast": 30,
+          "normal": 0,
+          "slow": 0,
+          "very_slow": 0
+        },
+        "outliers": 3,
+        "outlier_percentage": 10.0,
+        "test_name": "List"
+      }
+    ],
+    "overall_consistency": 57.8972275295325
+  },
+  "improvements": {
+    "warmup_consistency": 81.54636801917141,
+    "filtered_consistency": 93.351122027944,
+    "batch_consistency": 96.85459528735565
+  }
+}

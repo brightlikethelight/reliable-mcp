@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - MCP Reliability Lab</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .nav {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin-right: 1rem;
+            border-radius: 4px;
+        }
+        
+        .nav a.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .leaderboard-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .leaderboard-section h2 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .podium {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .podium-place {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        
+        .podium-place:hover {
+            transform: translateY(-5px);
+        }
+        
+        .first-place {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            order: 2;
+        }
+        
+        .second-place {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+            order: 1;
+            margin-top: 2rem;
+        }
+        
+        .third-place {
+            background: linear-gradient(135deg, #cd7f32 0%, #e8a865 100%);
+            order: 3;
+            margin-top: 2rem;
+        }
+        
+        .medal {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .server-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .tests-count {
+            color: #718096;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background: #f7fafc;
+        }
+        
+        .rank {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .workload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .workload-card {
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .workload-name {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+        
+        .workload-winner {
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .metric-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .metric-good {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .metric-average {
+            background: #fed7aa;
+            color: #7c2d12;
+        }
+        
+        .metric-poor {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        @media (max-width: 768px) {
+            .podium {
+                grid-template-columns: 1fr;
+            }
+            
+            .second-place, .third-place {
+                margin-top: 0;
+            }
+            
+            .first-place {
+                order: 1;
+            }
+            
+            .second-place {
+                order: 2;
+            }
+            
+            .third-place {
+                order: 3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Leaderboard</h1>
+            <p>MCP Server Performance Rankings</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/">Dashboard</a>
+            <a href="/test">Test Center</a>
+            <a href="/metrics">Metrics</a>
+            <a href="/leaderboard" class="active">Leaderboard</a>
+        </nav>
+        
+        {% if overall_rankings %}
+        <div class="leaderboard-section">
+            <h2>Top Performers</h2>
+            
+            {% if overall_rankings|length >= 3 %}
+            <div class="podium">
+                {% for i in range(3) %}
+                {% set server, score, tests = overall_rankings[i] %}
+                <div class="podium-place {% if i == 0 %}first-place{% elif i == 1 %}second-place{% else %}third-place{% endif %}">
+                    <div class="medal">
+                        {% if i == 0 %}🥇{% elif i == 1 %}🥈{% else %}🥉{% endif %}
+                    </div>
+                    <div class="server-name">{{ server }}</div>
+                    <div class="score">{{ "%.1f"|format(score) }}</div>
+                    <div class="tests-count">{{ tests }} tests</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Full Rankings</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Server</th>
+                        <th>Average Score</th>
+                        <th>Tests Run</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i, (server, score, tests) in enumerate(overall_rankings) %}
+                    <tr>
+                        <td class="rank">#{{ i + 1 }}</td>
+                        <td style="font-weight: 600;">{{ server }}</td>
+                        <td>{{ "%.1f"|format(score) }}/100</td>
+                        <td>{{ tests }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        
+        {% if workload_bests %}
+        <div class="leaderboard-section">
+            <h2>Best by Workload</h2>
+            <div class="workload-grid">
+                {% for workload, server in workload_bests.items() %}
+                <div class="workload-card">
+                    <div class="workload-name">{{ workload }}</div>
+                    <div class="workload-winner">🥇 {{ server }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if recent_entries %}
+        <div class="leaderboard-section">
+            <h2>Recent Benchmark Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Server</th>
+                        <th>Workload</th>
+                        <th>Score</th>
+                        <th>Throughput</th>
+                        <th>P95 Latency</th>
+                        <th>Consistency</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in recent_entries %}
+                    <tr>
+                        <td style="font-weight: 600;">{{ entry.server }}</td>
+                        <td>{{ entry.workload }}</td>
+                        <td style="font-weight: bold; color: #667eea;">{{ "%.1f"|format(entry.score) }}</td>
+                        <td>
+                            <span class="metric-badge {% if entry.throughput > 500 %}metric-good{% elif entry.throughput > 100 %}metric-average{% else %}metric-poor{% endif %}">
+                                {{ "%.0f"|format(entry.throughput) }} ops/s
+                            </span>
+                        </td>
+                        <td>
+                            <span class="metric-badge {% if entry.p95_latency < 10 %}metric-good{% elif entry.p95_latency < 50 %}metric-average{% else %}metric-poor{% endif %}">
+                                {{ "%.1f"|format(entry.p95_latency) }}ms
+                            </span>
+                        </td>
+                        <td>
+                            <span class="metric-badge {% if entry.consistency > 70 %}metric-good{% elif entry.consistency > 40 %}metric-average{% else %}metric-poor{% endif %}">
+                                {{ "%.0f"|format(entry.consistency) }}%
+                            </span>
+                        </td>
+                        <td style="color: #718096; font-size: 0.875rem;">
+                            {{ entry.timestamp }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        
+        {% if not overall_rankings and not recent_entries %}
+        <div class="leaderboard-section" style="text-align: center; padding: 4rem;">
+            <div style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;">📊</div>
+            <p style="color: #718096;">No benchmark results yet.</p>
+            <p style="color: #718096; margin-top: 0.5rem;">Run some tests to populate the leaderboard!</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <script>
+        // Auto-refresh every 60 seconds
+        setTimeout(() => {
+            window.location.reload();
+        }, 60000);
+    </script>
+</body>
+</html>

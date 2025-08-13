@@ -1,0 +1,105 @@
+<div class="card" style="margin-top: 1rem; background: linear-gradient(135deg, #f6f8fb 0%, #ffffff 100%);">
+    <h3 style="color: #2d3748; margin-bottom: 1.5rem;">
+        📈 {{ results.type }} Results
+    </h3>
+    
+    {% if results.status == "error" %}
+    <div style="background: #fff5f5; border-left: 4px solid #f56565; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+        <strong style="color: #c53030;">Error:</strong> {{ results.error }}
+    </div>
+    {% else %}
+    
+    <div class="grid" style="margin-bottom: 1.5rem;">
+        {% if results.score is defined %}
+        <div class="stat">
+            <div class="stat-value">{{ "%.1f"|format(results.score) }}{% if results.type != "Scientific Suite" %}%{% endif %}</div>
+            <div class="stat-label">
+                {% if results.grade %}
+                    Grade: {{ results.grade }}
+                {% else %}
+                    Reliability Score
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if results.tests_passed is defined %}
+        <div class="stat">
+            <div class="stat-value">{{ results.tests_passed }}/{{ results.total_tests }}</div>
+            <div class="stat-label">Tests Passed</div>
+        </div>
+        {% endif %}
+        
+        {% if results.throughput is defined %}
+        <div class="stat">
+            <div class="stat-value">{{ "%.0f"|format(results.throughput) }}</div>
+            <div class="stat-label">Ops/Second</div>
+        </div>
+        {% endif %}
+        
+        {% if results.avg_latency is defined %}
+        <div class="stat">
+            <div class="stat-value">{{ "%.1f"|format(results.avg_latency) }}ms</div>
+            <div class="stat-label">Avg Latency</div>
+        </div>
+        {% endif %}
+        
+        {% if results.p95_latency is defined %}
+        <div class="stat">
+            <div class="stat-value">{{ "%.1f"|format(results.p95_latency) }}ms</div>
+            <div class="stat-label">P95 Latency</div>
+        </div>
+        {% endif %}
+        
+        {% if results.consistency is defined %}
+        <div class="stat">
+            <div class="stat-value">{{ "%.0f"|format(results.consistency) }}%</div>
+            <div class="stat-label">Consistency</div>
+        </div>
+        {% endif %}
+        
+        {% if results.error_rate is defined and results.error_rate > 0 %}
+        <div class="stat">
+            <div class="stat-value" style="color: #f56565;">{{ "%.1f"|format(results.error_rate * 100) }}%</div>
+            <div class="stat-label">Error Rate</div>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if results.recommendation %}
+    <div style="background: #edf2f7; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+        <strong>Recommendation:</strong> {{ results.recommendation }}
+    </div>
+    {% endif %}
+    
+    {% if results.breakdown %}
+    <div style="margin-bottom: 1rem;">
+        <h4 style="color: #4a5568; margin-bottom: 0.5rem;">Score Breakdown:</h4>
+        <div style="background: #f7fafc; padding: 1rem; border-radius: 6px;">
+            {% for component, score in results.breakdown.items() %}
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: #718096;">{{ component.replace("_", " ").title() }}:</span>
+                <span style="font-weight: 600; color: #2d3748;">{{ "%.1f"|format(score) }}/100</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+        <span style="color: #718096; font-size: 0.875rem;">
+            Status: <span class="status-{{ results.status }}" style="font-weight: 600;">{{ results.status|upper }}</span>
+        </span>
+        
+        {% if results.details %}
+        <details style="cursor: pointer;">
+            <summary style="color: #667eea; font-weight: 600; font-size: 0.875rem;">
+                View Details →
+            </summary>
+            <pre style="background: #f7fafc; padding: 1rem; border-radius: 6px; margin-top: 1rem; overflow-x: auto; font-size: 0.75rem;">{{ results.details|tojson(indent=2) }}</pre>
+        </details>
+        {% endif %}
+    </div>
+    
+    {% endif %}
+</div>

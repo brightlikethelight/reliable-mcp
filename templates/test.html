@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Center - MCP Reliability Lab</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .nav {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin-right: 1rem;
+            border-radius: 4px;
+        }
+        
+        .nav a.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .test-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+        
+        .test-config {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+        
+        .test-results {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .form-section h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            color: #4a5568;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .test-type-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .test-type-option {
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-type-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .test-type-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .test-type-option .icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-type-option .name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .workload-options {
+            display: none;
+        }
+        
+        .workload-options.show {
+            display: block;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .placeholder {
+            text-align: center;
+            color: #718096;
+            padding: 3rem;
+        }
+        
+        .placeholder .icon {
+            font-size: 3rem;
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .test-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-type-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test Center</h1>
+            <p>Run comprehensive tests on MCP servers</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/">Dashboard</a>
+            <a href="/test" class="active">Test Center</a>
+            <a href="/metrics">Metrics</a>
+            <a href="/leaderboard">Leaderboard</a>
+        </nav>
+        
+        <div class="test-container">
+            <div class="test-config">
+                <form id="test-form" hx-post="/run-test" hx-target="#test-results" hx-indicator="#loading">
+                    <div class="form-section">
+                        <h3>Test Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="server_type">Server Type</label>
+                            <select name="server_type" id="server_type" required>
+                                <option value="filesystem">Filesystem</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Test Type</label>
+                            <div class="test-type-selector">
+                                <div class="test-type-option" onclick="selectTestType(this, 'basic')">
+                                    <div class="icon">⚡</div>
+                                    <div class="name">Basic</div>
+                                </div>
+                                <div class="test-type-option" onclick="selectTestType(this, 'scientific')">
+                                    <div class="icon">🔬</div>
+                                    <div class="name">Scientific</div>
+                                </div>
+                                <div class="test-type-option" onclick="selectTestType(this, 'benchmark')">
+                                    <div class="icon">📊</div>
+                                    <div class="name">Benchmark</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="test_type" id="test_type" required>
+                        </div>
+                        
+                        <div class="form-group workload-options" id="workload-options">
+                            <label for="workload">Workload Pattern</label>
+                            <select name="workload" id="workload">
+                                {% for workload in workloads %}
+                                <option value="{{ workload }}">{{ workload.replace("_", " ").title() }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        Run Test
+                        <span id="loading" class="htmx-indicator loading"></span>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="test-results">
+                <h2>Test Results</h2>
+                <div id="test-results">
+                    <div class="placeholder">
+                        <div class="icon">📋</div>
+                        <p>Select a test configuration and click "Run Test" to begin</p>
+                        <p style="margin-top: 1rem; font-size: 0.875rem;">
+                            Tests will run against real MCP servers and measure actual performance
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function selectTestType(element, type) {
+            // Remove selected class from all options
+            document.querySelectorAll('.test-type-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Set hidden input value
+            document.getElementById('test_type').value = type;
+            
+            // Show/hide workload options for benchmark
+            const workloadOptions = document.getElementById('workload-options');
+            if (type === 'benchmark') {
+                workloadOptions.classList.add('show');
+            } else {
+                workloadOptions.classList.remove('show');
+            }
+        }
+        
+        // Select basic by default
+        document.addEventListener('DOMContentLoaded', function() {
+            const basicOption = document.querySelector('.test-type-option');
+            if (basicOption) {
+                selectTestType(basicOption, 'basic');
+            }
+        });
+    </script>
+</body>
+</html>

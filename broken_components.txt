@@ -1,0 +1,10 @@
+BROKEN/UNNECESSARY COMPONENTS:
+  MetricsService
+  Complex: WebSocket
+  Complex: Kubernetes
+  Complex: Alembic Migrations
+  Complex: Redis
+  Complex: Complex Models
+  Complex: Complex Schemas
+
+Total: 7 broken/unnecessary components
