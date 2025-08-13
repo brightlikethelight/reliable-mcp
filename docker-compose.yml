@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mcp-lab:
+    build: .
+    image: mcp-reliability-lab:latest
+    container_name: mcp-reliability-lab
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount for test files
+      - ./data/test-files:/tmp/mcp-test
+      # Mount for benchmark results
+      - ./data/results:/app/results
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MCP_LAB_TEST_DIR=/tmp/mcp-test
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+    restart: unless-stopped
+    command: python working_demo.py
+
+  # Run benchmarks
+  benchmark:
+    build: .
+    image: mcp-reliability-lab:latest
+    container_name: mcp-benchmark
+    volumes:
+      - ./data/test-files:/tmp/mcp-test
+      - ./data/results:/app/results
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MCP_LAB_TEST_DIR=/tmp/mcp-test
+    profiles:
+      - benchmark
+    command: python benchmarking/benchmark_runner.py --quick
+
+volumes:
+  test-files:
+  results:
