@@ -1,44 +1,25 @@
-"""MCP Agent Reliability Lab - Comprehensive testing framework for MCP servers."""
+"""
+MCP Reliability Lab - Comprehensive Testing Platform for MCP Servers
+Built for Modal + Cognition + AWS Hackathon 2025
+"""
 
-from .core.wrapper import MCPServerWrapper
-from .core.config import (
-    MCPServerConfig, StdioTransportConfig, HttpTransportConfig, 
-    WebSocketTransportConfig, MCPRetryConfig, MCPTimeoutConfig,
-    MCPObservabilityConfig, TransportType, ServerType, RetryStrategy
-)
-from .core.errors import (
-    MCPError, MCPConnectionError, MCPTimeoutError, MCPTransportError,
-    MCPProtocolError, MCPServerError, MCPClientError, 
-    MCPRetryExhaustedError, MCPConfigurationError
-)
-from .observability import setup_telemetry, get_tracer, get_meter
-from .sandbox import (
-    SandboxManager, SandboxConfig, ModalSandboxConfig, 
-    SandboxProvider, ResourceLimits, get_sandbox_template,
-    create_custom_template, list_templates
-)
+__version__ = "1.0.0"
+__author__ = "Bright Liu"
 
-__version__ = "0.1.0"
+# Core modules
+from .mcp_client import MCPClient
+from .config import SERVERS, TEST_DIR
+
+# Testing modules  
+from .security_scanner import SecurityScanner
+from .performance_tester import PerformanceTester
+from .chaos_tester import ChaosTester
 
 __all__ = [
-    # Core classes
-    "MCPServerWrapper",
-    
-    # Configuration
-    "MCPServerConfig", "StdioTransportConfig", "HttpTransportConfig", 
-    "WebSocketTransportConfig", "MCPRetryConfig", "MCPTimeoutConfig",
-    "MCPObservabilityConfig", "TransportType", "ServerType", "RetryStrategy",
-    
-    # Errors
-    "MCPError", "MCPConnectionError", "MCPTimeoutError", "MCPTransportError",
-    "MCPProtocolError", "MCPServerError", "MCPClientError", 
-    "MCPRetryExhaustedError", "MCPConfigurationError",
-    
-    # Observability
-    "setup_telemetry", "get_tracer", "get_meter",
-    
-    # Sandbox Orchestration
-    "SandboxManager", "SandboxConfig", "ModalSandboxConfig",
-    "SandboxProvider", "ResourceLimits", "get_sandbox_template",
-    "create_custom_template", "list_templates",
+    "MCPClient",
+    "SERVERS",
+    "TEST_DIR", 
+    "SecurityScanner",
+    "PerformanceTester",
+    "ChaosTester",
 ]
