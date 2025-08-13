@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MCP Server Performance Leaderboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .rank-1 { background-color: #ffd700; font-weight: bold; }
+        .rank-2 { background-color: #c0c0c0; }
+        .rank-3 { background-color: #cd7f32; }
+        .metric {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 2px;
+            font-size: 12px;
+        }
+        .good { background-color: #4caf50; color: white; }
+        .average { background-color: #ff9800; color: white; }
+        .poor { background-color: #f44336; color: white; }
+        .timestamp {
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 MCP Server Performance Leaderboard</h1>
+        
+        <h2>Overall Rankings</h2>
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Server</th>
+                <th>Average Score</th>
+                <th>Tests Run</th>
+            </tr>
+
+            <tr class="rank-1">
+                <td>#1</td>
+                <td>filesystem</td>
+                <td>30.0/100</td>
+                <td>1</td>
+            </tr>
+
+        </table>
+        
+        <h2>Best Performers by Workload</h2>
+        <table>
+            <tr>
+                <th>Workload</th>
+                <th>Best Server</th>
+            </tr>
+
+            <tr>
+                <td>Real World Mix</td>
+                <td>🥇 filesystem</td>
+            </tr>
+
+        </table>
+        
+        <h2>Recent Benchmark Results</h2>
+        <table>
+            <tr>
+                <th>Server</th>
+                <th>Workload</th>
+                <th>Score</th>
+                <th>Throughput</th>
+                <th>P95 Latency</th>
+                <th>Consistency</th>
+                <th>Timestamp</th>
+            </tr>
+
+            <tr>
+                <td>filesystem</td>
+                <td>Real World Mix</td>
+                <td><strong>30.0</strong></td>
+                <td><span class="metric poor">0 ops/s</span></td>
+                <td><span class="metric good">0.0ms</span></td>
+                <td><span class="metric poor">0%</span></td>
+                <td class="timestamp">2025-08-11 22:25</td>
+            </tr>
+
+        </table>
+        
+        <div style="text-align: center; margin-top: 30px; color: #999;">
+            Generated: 2025-08-11 18:25:43
+        </div>
+    </div>
+</body>
+</html>
